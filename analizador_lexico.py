@@ -13,22 +13,22 @@ import ply.lex as lex
 
 # Lista de nombres de tokens
 tokens = (
-    # Windsor Estrada: Delimitadores
-    'NUMBER',
-    'PLUS',
-    'MINUS',
-    'TIMES',
-    'DIVIDE',
+    # Se irán agregando los tokens de todo el equipo aquí
     'LPAREN',
     'RPAREN',
-    'MOD',
-    'VARIABLE',
-    'FLOAT'
-    # Elijan otros tokens y ponganlos aqui con el mismo formato
-    # Recuerden que si añaden elementos aqui, añadan una coma luego de 'FLOAT'
+    'LBRACE',
+    'RBRACE',
+    'LBRACKET',
+    'RBRACKET',
+    'COMMA',
+    'SEMICOLON',
+    'COLON',
+    'DOT',
 )
 
-# Windsor Estrada: Reglas de expresiones regulares para tokens simples
+# =============================================================
+# Windsor Estrada: Delimitadores, Comentarios y Saltos de línea
+# =============================================================
 t_LPAREN    = r'\('
 t_RPAREN    = r'\)'
 t_LBRACE    = r'\{'
@@ -40,26 +40,14 @@ t_SEMICOLON = r';'
 t_COLON     = r':'
 t_DOT       = r'\.'
 
-# Manejo de errores léxicos
-def t_error(t):
-print(f"Error léxico: Caractér no reconocido '{t.value[0]}' en la línea {t.lexer.lineno}")
-t.lexer.skip(1)
-
-# ==============================================
-# Windsor Estrada: Comentarios y Saltos de línea
-# ==============================================
-
-# Ignorar comentarios
 def t_COMMENT_LINE(t):
     r'//.*'
-    pass
+    pass  # Ignorar comentarios de línea
 
-# Ignorar comentarios de bloque
 def t_COMMENT_BLOCK(t):
     r'/\*[^*]*\*+([^/][^*]*\*+)*/'
-    pass
+    pass  # Ignorar comentarios de bloque
 
-# 
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
@@ -74,6 +62,12 @@ t_ignore = ' \t\r'
 # ===========================================================
 # Cesar: Literales (números, strings, char) y Tipos de datos.
 # ===========================================================
+
+
+# Manejo de errores léxicos global
+def t_error(t):
+    print(f"Error léxico: Carácter no reconocido '{t.value[0]}' en la línea {t.lexer.lineno}")
+    t.lexer.skip(1)
 
 # Construir el lexer
 lexer = lex.lex()
