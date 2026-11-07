@@ -91,6 +91,13 @@ tokens = (
     'MULTIPLY_ASSIGN',
     'DIVIDE_ASSIGN',
     'MODULO_ASSIGN',
+
+    'RANGE',
+    'RANGE_INCLUSIVE',
+    'AMPERSAND',
+    'PATHSEP',
+    'ARROW',
+    'FAT_ARROW',
 )
 
 # =============================================================
@@ -125,6 +132,86 @@ t_ignore = ' \t\r'
 # Israel: Identificadores, Palabras Reservadas y Operadores.
 # ==========================================================
 
+# PALABRAS RESERVADAS
+reserved = {
+    'let': 'LET',
+    'mut': 'MUT',
+    'const': 'CONST',
+    'static': 'STATIC',
+    'fn': 'FN',
+    'struct': 'STRUCT',
+    'enum': 'ENUM',
+    'trait': 'TRAIT',
+    'impl': 'IMPL',
+    'type': 'TYPE',
+    'if': 'IF',
+    'else': 'ELSE',
+    'match': 'MATCH',
+    'loop': 'LOOP',
+    'while': 'WHILE',
+    'for': 'FOR',
+    'in': 'IN',
+    'break': 'BREAK',
+    'continue': 'CONTINUE',
+    'return': 'RETURN',
+    'true': 'TRUE',
+    'false': 'FALSE',
+    'mod': 'MOD',
+    'use': 'USE',
+    'crate': 'CRATE',
+    'super': 'SUPER',
+    'self': 'SELF',
+    'Self': 'SELF_TYPE',
+    'pub': 'PUB',
+    'as': 'AS',
+    'ref': 'REF',
+    'move': 'MOVE',
+    'dyn': 'DYN',
+    'where': 'WHERE',
+    'async': 'ASYNC',
+    'await': 'AWAIT',
+    'unsafe': 'UNSAFE',
+    'extern': 'EXTERN'
+}
+
+# IDENTIFICADORES
+def t_ID(t): 
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    t.type = reserved.get(t.value, 'ID') #Si no es una palabra reservada es un ID
+    return t
+
+t_RAW_ID = r'r\#[a-zA-Z_][a-zA-Z0-9_]*'
+t_LOOP_LABEL = r"'[a-zA-Z_][a-zA-Z0-9_]*"
+
+# OPERADORES CON VARIOS CARACTERES
+t_RANGE_INCLUSIVE = r'\.\.='
+t_PLUS_ASSIGN    = r'\+='
+t_MINUS_ASSIGN   = r'-='
+t_MULTIPLY_ASSIGN = r'\*='
+t_DIVIDE_ASSIGN  = r'/='
+t_MODULO_ASSIGN  = r'%='
+t_EQUAL          = r'=='
+t_NOT_EQUAL      = r'!='
+t_LESS_EQUAL     = r'<='
+t_GREATER_EQUAL  = r'>='
+t_AND            = r'&&'
+t_OR             = r'\|\|'
+t_RANGE          = r'\.\.'
+t_PATHSEP        = r'::'
+t_ARROW          = r'->'
+t_FAT_ARROW      = r'=>'
+
+# OPERADORES CON SOLO UN CARACTER
+t_PLUS        = r'\+'
+t_MINUS       = r'-'
+t_MULTIPLY    = r'\*'
+t_DIVIDE      = r'/'
+t_MODULO      = r'%'
+t_LESS_THAN   = r'<'
+t_GREATER_THAN = r'>'
+t_NOT         = r'!'
+t_ASSIGN      = r'='
+t_AMPERSAND   = r'&'
 
 # ===========================================================
 # Cesar: Literales (números, strings, char) y Tipos de datos.
