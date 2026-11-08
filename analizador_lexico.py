@@ -144,7 +144,7 @@ reserved = {
     'fn': 'FN',
     'struct': 'STRUCT',
     'enum': 'ENUM',
-    'union': 'UNION'
+    'union': 'UNION',
     'trait': 'TRAIT',
     'impl': 'IMPL',
     'type': 'TYPE',
