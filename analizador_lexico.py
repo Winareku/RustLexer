@@ -28,6 +28,7 @@ tokens = (
     'ID',
     'RAW_ID',
     'LOOP_LABEL',
+    'MACRO',
 
     'LET',
     'MUT',
@@ -36,6 +37,7 @@ tokens = (
     'FN',
     'STRUCT',
     'ENUM',
+    'UNION'
     'TRAIT',
     'IMPL',
     'TYPE',
@@ -80,6 +82,7 @@ tokens = (
     'GREATER_THAN',
     'LESS_EQUAL',
     'GREATER_EQUAL',
+    'PIPE',
 
     'AND',
     'OR',
@@ -141,6 +144,7 @@ reserved = {
     'fn': 'FN',
     'struct': 'STRUCT',
     'enum': 'ENUM',
+    'union': 'UNION'
     'trait': 'TRAIT',
     'impl': 'IMPL',
     'type': 'TYPE',
@@ -175,43 +179,50 @@ reserved = {
 }
 
 # IDENTIFICADORES
-def t_ID(t): 
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = reserved.get(t.value, 'ID') #Si no es una palabra reservada es un ID
+def t_RAW_ID(t):
+    r'r\#[a-zA-Z_][a-zA-Z0-9_]*'
     return t
 
-t_RAW_ID = r'r\#[a-zA-Z_][a-zA-Z0-9_]*'
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*(!(?!=))?'
+    if t.value.endswith('!'):
+        t.type = 'MACRO'
+    else:
+        t.type = reserved.get(t.value, 'ID')
+    return t
+
 t_LOOP_LABEL = r"'[a-zA-Z_][a-zA-Z0-9_]*"
 
 # OPERADORES CON VARIOS CARACTERES
 t_RANGE_INCLUSIVE = r'\.\.='
-t_PLUS_ASSIGN    = r'\+='
-t_MINUS_ASSIGN   = r'-='
+t_PLUS_ASSIGN = r'\+='
+t_MINUS_ASSIGN = r'-='
 t_MULTIPLY_ASSIGN = r'\*='
-t_DIVIDE_ASSIGN  = r'/='
-t_MODULO_ASSIGN  = r'%='
-t_EQUAL          = r'=='
-t_NOT_EQUAL      = r'!='
-t_LESS_EQUAL     = r'<='
-t_GREATER_EQUAL  = r'>='
-t_AND            = r'&&'
-t_OR             = r'\|\|'
-t_RANGE          = r'\.\.'
-t_PATHSEP        = r'::'
-t_ARROW          = r'->'
-t_FAT_ARROW      = r'=>'
+t_DIVIDE_ASSIGN = r'/='
+t_MODULO_ASSIGN = r'%='
+t_EQUAL = r'=='
+t_NOT_EQUAL = r'!='
+t_LESS_EQUAL = r'<='
+t_GREATER_EQUAL = r'>='
+t_AND = r'&&'
+t_OR = r'\|\|'
+t_RANGE = r'\.\.'
+t_PATHSEP = r'::'
+t_ARROW = r'->'
+t_FAT_ARROW = r'=>'
 
 # OPERADORES CON SOLO UN CARACTER
-t_PLUS        = r'\+'
-t_MINUS       = r'-'
-t_MULTIPLY    = r'\*'
-t_DIVIDE      = r'/'
-t_MODULO      = r'%'
-t_LESS_THAN   = r'<'
+t_PLUS = r'\+'
+t_MINUS = r'-'
+t_MULTIPLY = r'\*'
+t_DIVIDE = r'/'
+t_MODULO = r'%'
+t_LESS_THAN = r'<'
 t_GREATER_THAN = r'>'
-t_NOT         = r'!'
-t_ASSIGN      = r'='
-t_AMPERSAND   = r'&'
+t_NOT = r'!'
+t_ASSIGN = r'='
+t_AMPERSAND = r'&'
+t_PIPE = r'\|'
 
 # ===========================================================
 # Cesar: Literales (números, strings, char) y Tipos de datos.
