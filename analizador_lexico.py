@@ -37,7 +37,7 @@ tokens = (
     'FN',
     'STRUCT',
     'ENUM',
-    'UNION'
+    'UNION',
     'TRAIT',
     'IMPL',
     'TYPE',
