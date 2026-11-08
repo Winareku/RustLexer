@@ -72,7 +72,7 @@ tokens = (
     'MINUS',
     'MULTIPLY',
     'DIVIDE',
-    'MODULO'
+    'MODULO',
 
     'EQUAL',
     'NOT_EQUAL',
