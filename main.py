@@ -1,41 +1,64 @@
-# ------------------------------
-# Borrador del Analizador Léxico
-# ------------------------------
+# ------------------------------------------------------------
+# main.py - Ejecuta el analizador léxico y genera el log
+# ------------------------------------------------------------
 
+# Uso: python main.py algoritmos/algoritmo1.rs Winareku
+
+import os
 import sys
+from datetime import datetime
 from analizador_lexico import analizar
 
 def main():
-
-    # Validar que se envíe el archivo por consola
-    if len(sys.argv) < 2:
-        print("Uso: python main.py archivo.rs")
+    if len(sys.argv) != 3:
+        print("Uso: python main.py <archivo.rs> <usuarioGit>")
         sys.exit(1)
 
-    ruta_archivo = sys.argv[1]
-
-    # Leer el archivo
+    ruta, usuario = sys.argv[1], sys.argv[2]
+    
     try:
-        with open(ruta_archivo, encoding='utf-8') as f:
+        with open(ruta, encoding='utf-8') as f:
             codigo = f.read()
     except FileNotFoundError:
-        print(f"Error: No se encontró el archivo '{ruta_archivo}'")
+        print(f"Error: No se encontró el archivo '{ruta}'")
         sys.exit(1)
 
-    # Uso del analizador léxico
+    ahora = datetime.now()
     tokens, errores = analizar(codigo)
 
-    # Mostrar resultados
-    print(f"\nResultados para {ruta_archivo} ({len(tokens)} tokens):")
+    lineas = [
+        "ANALIZADOR LÉXICO - RUST (PLY)",
+        f"Archivo analizado : {ruta}",
+        f"Usuario Git       : {usuario}",
+        f"Fecha y hora      : {ahora.strftime('%d/%m/%Y %H:%M:%S')}",
+        "",
+        "=== TOKENS RECONOCIDOS ===",
+        f"{'LÍNEA':<7}{'COL':<6}{'TIPO':<14}VALOR",
+        "-" * 50,
+    ]
     for t in tokens:
-        print(f"  Línea {t['linea']}: {t['tipo']} -> {t['valor']!r}")
+        lineas.append(f"{t['linea']:<7}{t['columna']:<6}{t['tipo']:<14}{t['valor']!r}")
 
+    lineas += ["", "=== ERRORES LÉXICOS ==="]
     if errores:
-        print("\nErrores encontrados:")
         for e in errores:
-            print(f"  Línea {e['linea']}: {e['mensaje']}")
+            lineas.append(f"[ERROR] Línea {e['linea']}, Columna {e['columna']}: {e['mensaje']}")
     else:
-        print("\nAnálisis completado sin errores.")
+        lineas.append("(ninguno)")
+
+    lineas += ["", "=== RESUMEN ===",
+               f"Tokens reconocidos: {len(tokens)}",
+               f"Errores léxicos   : {len(errores)}"]
+    texto = "\n".join(lineas) + "\n"
+
+    os.makedirs("logs", exist_ok=True)
+    nombre = f"lexico-{usuario}-{ahora.strftime('%d-%m-%Y-%Hh%M')}.txt"
+    destino = os.path.join("logs", nombre)
+    with open(destino, "w", encoding="utf-8") as f:
+        f.write(texto)
+
+    print(texto)
+    print(f"Log guardado exitosamente en: {destino}")
 
 if __name__ == "__main__":
     main()
