@@ -101,6 +101,11 @@ tokens = (
     'PATHSEP',
     'ARROW',
     'FAT_ARROW',
+    'STRING_LITERAL',
+    'CHAR_LITERAL',
+    'FLOAT_LITERAL',
+    'INTEGER_LITERAL',
+    'DATA_TYPE',
 )
 
 # =============================================================
@@ -175,7 +180,29 @@ reserved = {
     'async': 'ASYNC',
     'await': 'AWAIT',
     'unsafe': 'UNSAFE',
-    'extern': 'EXTERN'
+    'extern': 'EXTERN',
+
+    # Tipos de datos de Rust
+    'i8': 'DATA_TYPE',
+    'i16': 'DATA_TYPE',
+    'i32': 'DATA_TYPE',
+    'i64': 'DATA_TYPE',
+    'i128': 'DATA_TYPE',
+    'isize': 'DATA_TYPE',
+
+    'u8': 'DATA_TYPE',
+    'u16': 'DATA_TYPE',
+    'u32': 'DATA_TYPE',
+    'u64': 'DATA_TYPE',
+    'u128': 'DATA_TYPE',
+    'usize': 'DATA_TYPE',
+
+    'f32': 'DATA_TYPE',
+    'f64': 'DATA_TYPE',
+    'bool': 'DATA_TYPE',
+    'char': 'DATA_TYPE',
+    'str': 'DATA_TYPE',
+    'String': 'DATA_TYPE',
 }
 
 # IDENTIFICADORES
@@ -228,19 +255,37 @@ t_PIPE = r'\|'
 # Cesar: Literales (números, strings, char) y Tipos de datos.
 # ===========================================================
 
+def t_STRING_LITERAL(t):
+    r'"([^"\\\n]|\\.)*"'
+    return t
+
+def t_CHAR_LITERAL(t):
+    r"'([^'\\\n]|\\.)'"
+    return t
+
+def t_FLOAT_LITERAL(t):
+    r'(?:[0-9][0-9_]*\.[0-9][0-9_]*(?:[eE][+-]?[0-9][0-9_]*)?|[0-9][0-9_]*[eE][+-]?[0-9][0-9_]*)(?:f32|f64)?|[0-9][0-9_]*(?:f32|f64)'
+    return t
+
+def t_INTEGER_LITERAL(t):
+    r'(?:0[xX][0-9a-fA-F_]+|0[oO][0-7_]+|0[bB][01_]+|[0-9][0-9_]*)(?:i8|i16|i32|i64|i128|isize|u8|u16|u32|u64|u128|usize)?'
+    return t
 
 # Manejo de errores léxicos global
 def t_error(t):
-    print(f"Error léxico: Carácter no reconocido '{t.value[0]}' en la línea {t.lexer.lineno}")
+    caracter = t.value[0]
+    t.lexer.errores.append({'linea': t.lexer.lineno,'mensaje': f"Carácter no reconocido {caracter!r}"})
     t.lexer.skip(1)
 
 # Construir el lexer
 lexer = lex.lex()
 
 def analizar(codigo):
+    lexer.lineno = 1
+    lexer.errores = []
     lexer.input(codigo)
+
     tokens_encontrados = []
-    errores_encontrados = []
     
     while True:
         tok = lexer.token()
@@ -252,7 +297,7 @@ def analizar(codigo):
             'linea': tok.lineno,
             'columna': find_column(codigo, tok)
         })
-    return tokens_encontrados, errores_encontrados
+    return tokens_encontrados, lexer.errores
 
 def find_column(input_text, token):
     last_cr = input_text.rfind('\n', 0, token.lexpos)
