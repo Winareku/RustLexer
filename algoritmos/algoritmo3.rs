@@ -49,4 +49,7 @@ fn main() {
     let tabulacion: char = '\t';
     let desactivado: bool = false;
     let tamano: usize = 1_024usize;
+
+    let comilla_simple: char = '\'';
+    let barra_invertida: char = '\\';
 }
